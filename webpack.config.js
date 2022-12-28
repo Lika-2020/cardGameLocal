@@ -5,17 +5,14 @@ const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-const mode =
-    process.env.NODE_ENV === 'production' ? 'production' : 'development';
-
 module.exports = {
-    entry: './index.js',
-    mode: 'production',
+    entry: './src/index.js',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader'],
+                test: /\.s[ac]ss$/i,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
             },
             {
                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -40,18 +37,20 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin(),
-        new HtmlWebpackPlugin(),
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+        }),
         new CopyPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, './src/assets'),
+                    from: path.resolve(__dirname, './src'),
                     to: path.resolve(__dirname, './dist/assets'),
                     noErrorOnMissing: true,
                 },
             ],
         }),
         new HtmlWebpackPlugin({
-            template: './index.html',
+            template: './src/index.html',
         }),
     ],
 };
