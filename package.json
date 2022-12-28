@@ -39,7 +39,8 @@
         "lint": "npm run lint:js && npm run lint:scss",
         "prepare": "husky install",
         "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-        "start": "webpack-dev-server ––open"
+        "start": "webpack-dev-server"
+  
     },
     "repository": {
         "type": "git",

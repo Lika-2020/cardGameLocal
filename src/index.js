@@ -1,5 +1,6 @@
 import('./style.scss');
-
+import img from './img/cardFacedown.jpg';
+import ImgCards from './frontFacesCard';
 const app = document.querySelector('.app');
 
 window.application = {
@@ -88,6 +89,8 @@ function renderStartBlock(container) {
         });
     });
 
+    let numberOfCards;
+
     btnStart.addEventListener('click', () => {
         window.application.renderScreen('gameField');
         const level = window.application.level;
@@ -167,11 +170,11 @@ function renderGameFieldBlock(container) {
         divCards.appendChild(divCardsImage);
 
         const imgFront = document.createElement('img');
-        imgFront.src = './src/img/picture/' + arrCard[i] + '.jpg';
+        imgFront.src = ImgCards[i];
         imgFront.classList.add('front-face');
 
         const imgBack = document.createElement('img');
-        imgBack.src = './src/img/cardFacedown.jpg';
+        imgBack.src = img;
         imgBack.classList.add('back-face');
 
         divCardsImage.appendChild(imgFront);
@@ -285,8 +288,8 @@ function renderHeaderBlock(container) {
     divTimerWorld.appendChild(spanMin);
 
     const spanSec = document.createElement('span');
-    spanMin.classList.add('unit-time');
-    spanMin.textContent = 'sec';
+    spanSec.classList.add('unit-time');
+    spanSec.textContent = 'sec';
     divTimerWorld.appendChild(spanSec);
 
     const spanNum = document.createElement('span');
