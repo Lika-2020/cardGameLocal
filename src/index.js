@@ -1,6 +1,7 @@
 import('./style.scss');
-import img from './img/cardFacedown.jpg';
+import img from './img/cardFaceDown.jpg';
 import ImgCards from './frontFacesCard';
+
 const app = document.querySelector('.app');
 
 window.application = {
@@ -170,7 +171,7 @@ function renderGameFieldBlock(container) {
         divCards.appendChild(divCardsImage);
 
         const imgFront = document.createElement('img');
-        imgFront.src = ImgCards[i];
+        imgFront.src = ImgCards[arrCard[i] - 1];
         imgFront.classList.add('front-face');
 
         const imgBack = document.createElement('img');
@@ -193,7 +194,7 @@ function renderGameFieldBlock(container) {
             }
         };
 
-        cards.forEach((card) => {
+        cards.forEach(() => {
             setTimeout(() => flipCard(), 300);
             setTimeout(() => {
                 divCardsImage.classList.remove('flip');
@@ -205,7 +206,8 @@ function renderGameFieldBlock(container) {
     let hasFlippedCard = false;
 
     const flipCardClick = (event) => {
-        let firstCard, secondCard;
+        let firstCard;
+        let secondCard;
         const target = event.target.parentElement;
         console.log(target);
         target.classList.add('flip');
@@ -240,7 +242,6 @@ function renderGameFieldBlock(container) {
                     compared[0].attributes.src.nodeValue ===
                     compared[1].attributes.src.nodeValue
                 ) {
-                    console.log('Вы выиграли');
                     compared = [];
 
                     console.log(compared);
