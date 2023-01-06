@@ -1,6 +1,17 @@
-import('./style.scss');
+import './style.scss';
 import img from './img/cardFaceDown.jpg';
 import ImgCards from './frontFacesCard';
+import imgWins from './img/win.svg';
+import imgLoses from './img/lose.svg';
+
+
+declare global {
+    interface Window {
+        application: any;
+    }
+}
+
+window.application = window.application || {};
 
 const app = document.querySelector('.app');
 
@@ -9,6 +20,9 @@ window.application = {
     screens: {},
     level: null,
     cards: null,
+    time: null,
+    min: 0,
+    sec: 0,
 
     renderScreen: function (screenName) {
         window.application.timers.forEach((element) => {
@@ -18,8 +32,7 @@ window.application = {
         if (!window.application.screens[screenName]) {
             console.warn('Такой страницы нет');
         } else {
-            app.innerHTML = '';
-            window.application.screens[screenName]();
+            (app!.innerHTML = ''), window.application.screens[screenName]();
         }
     },
 
@@ -81,18 +94,24 @@ function renderStartBlock(container) {
     divGameBtn.appendChild(gameBtnStart);
 
     const btnStart = document.querySelector('.game__btn-start');
-    document.querySelectorAll('.button').forEach((element) => {
-        element.addEventListener('click', function (event) {
-            const levelBtn = event.target.textContent;
-            console.log(levelBtn);
+    document
+        .querySelectorAll<HTMLButtonElement>('.button')
+        .forEach((element) => {
+            element.addEventListener('click', function (event) {
+                element.style.border = '3px solid green';
 
-            window.application.level = levelBtn;
+                if (!(event.target instanceof HTMLElement)) return;
+                const levelBtn = event.target.textContent;
+
+                console.log(levelBtn);
+
+                window.application.level = levelBtn;
+            });
         });
-    });
 
-    let numberOfCards;
+    let numberOfCards: number;
 
-    btnStart.addEventListener('click', () => {
+    btnStart?.addEventListener('click', () => {
         window.application.renderScreen('gameField');
         const level = window.application.level;
         console.log(level);
@@ -103,7 +122,8 @@ function renderStartBlock(container) {
         } else if (level === '3') {
             numberOfCards = 9;
         } else {
-            console.log('Что-то пошло не так');
+            alert('Выбери сложность');
+            window.application.renderScreen('start');
         }
     });
 }
@@ -112,7 +132,7 @@ window.application.blocks['start'] = renderStartBlock;
 
 function renderStartScreen() {
     const div = document.createElement('div');
-    app.appendChild(div);
+    app?.appendChild(div);
     window.application.renderBlock('start', div);
 }
 
@@ -123,7 +143,7 @@ function renderGameFieldBlock(container) {
     const divCards = document.createElement('div');
     divCards.classList.add('cards');
 
-    let numberOfCards;
+    let numberOfCards: number;
 
     if (window.application.level === '1') {
         numberOfCards = 3;
@@ -139,8 +159,9 @@ function renderGameFieldBlock(container) {
         return cardValue;
     }
 
-    const arrCard = [];
-    for (let i = 0; i < numberOfCards; i++) {
+    const arrCard: number[] = [];
+
+    for (let i = 0; i < numberOfCards!; i++) {
         getRandomInt();
         if (arrCard.includes(cardValue)) {
             getRandomInt();
@@ -159,11 +180,11 @@ function renderGameFieldBlock(container) {
     for (let i = 0; i < arrCard.length; i++) {
         const divCardsImage = document.createElement('div');
         divCardsImage.classList.add('cards__image');
-        if (numberOfCards === 3) {
+        if (numberOfCards! === 3) {
             divCardsImage.classList.add('card3');
-        } else if (numberOfCards === 6) {
+        } else if (numberOfCards! === 6) {
             divCardsImage.classList.add('card6');
-        } else if (numberOfCards === 9) {
+        } else if (numberOfCards! === 9) {
             divCardsImage.classList.add('card9');
         }
 
@@ -224,16 +245,25 @@ function renderGameFieldBlock(container) {
 
     const divCardsImage = document.querySelectorAll('.cards__image');
 
-    let compared = [];
-    let counter = 0;
+    let compared: Element[] = [];
+  
 
+    let counter = 0;
+    document.firstElementChild instanceof Node;
+    true;
     divCardsImage.forEach((item) => {
         item.addEventListener('click', function () {
             if (item.children.length > 1) {
-                item.removeChild(item.lastElementChild);
-                compared.push(item.firstElementChild);
+                if (item.lastElementChild != null) {
+                    item.removeChild(item.lastElementChild);
+                }
+                if (item.firstElementChild != null) {
+                    compared.push(item.firstElementChild);
+                }
+
                 console.log(compared);
-                console.log(item.firstElementChild.attributes.src.nodeValue);
+
+                console.log(item?.firstElementChild?.attributes.src.nodeValue);
             } else {
                 return;
             }
@@ -243,7 +273,6 @@ function renderGameFieldBlock(container) {
                     compared[1].attributes.src.nodeValue
                 ) {
                     compared = [];
-
                     console.log(compared);
                     divCardsImage.forEach((item) => {
                         if (item.children.length === 1) {
@@ -253,12 +282,14 @@ function renderGameFieldBlock(container) {
                             const comparison = numberOfCards * 4;
                             console.log(comparison);
                             if (counter === comparison) {
-                                console.log('Вы выиграли');
+                                window.application.renderScreen('win');
+                                clearInterval(window.application.time);
                             }
                         }
                     });
                 } else {
-                    console.log('Вы проиграли');
+                    window.application.renderScreen('lose');
+                    clearInterval(window.application.time);
                 }
             }
         });
@@ -293,26 +324,212 @@ function renderHeaderBlock(container) {
     spanSec.textContent = 'sec';
     divTimerWorld.appendChild(spanSec);
 
-    const spanNum = document.createElement('span');
-    spanNum.classList.add('number');
-    spanNum.textContent = '00.00';
-    divTimer.appendChild(spanNum);
+    const spanNumMin = document.createElement('span');
+    spanNumMin.classList.add('number');
+    spanNumMin.textContent = '00';
+    divTimer.appendChild(spanNumMin);
+
+    const spanNumSec = document.createElement('span');
+    spanNumSec.classList.add('number');
+    spanNumSec.textContent = '00';
+    divTimer.appendChild(spanNumSec);
 
     const button = document.createElement('button');
     button.classList.add('game__btn-start');
     button.classList.add('btn');
     button.textContent = 'Начать заново';
     divTimePad.appendChild(button);
+
+    button.addEventListener('click', () => {
+        window.application.renderScreen('start');
+    });
+
+    let sec = 0;
+    let min = 0;
+
+    function startTimer() {
+        window.application.time = setInterval(function () {
+            sec++;
+
+            spanNumSec.textContent = sec;
+
+            if (sec < 10) {
+                spanNumSec.textContent = '0' + sec;
+                window.application.sec = sec;
+                console.log(window.application.sec);
+            }
+            if (sec === 60) {
+                sec = 0;
+                min++;
+                spanNumMin.textContent = min + '.';
+                if (min < 10) {
+                    spanNumMin.textContent = '0' + min + '.';
+                    window.application.min = min;
+                    console.log(window.application.min);
+                }
+            }
+        }, 1000);
+    }
+
+    window.application.timers.push(setTimeout(startTimer, 4000));
 }
 
 window.application.blocks['header'] = renderHeaderBlock;
 
 function renderGameFieldScreen() {
     const div = document.createElement('div');
-    app.appendChild(div);
+    app?.appendChild(div);
     window.application.renderBlock('header', div);
     window.application.renderBlock('gameField', div);
 }
 
 window.application.screens['gameField'] = renderGameFieldScreen;
-//вызываем в btmStart click
+//вызываем в btnStart click
+
+function renderWinBlock(container) {
+    const divGame = document.createElement('div');
+    divGame.classList.add('game');
+
+    const divGameCard = document.createElement('div');
+    divGameCard.classList.add('game__card');
+
+    const divCardContent = document.createElement('div');
+    divCardContent.classList.add('game__card-content');
+
+    const divImgWin = document.createElement('div');
+    divImgWin.classList.add('img__win');
+
+    const imgWin = document.createElement('img');
+    imgWin.src = imgWins;
+
+    const h3 = document.createElement('h3');
+    h3.classList.add('game__title');
+    h3.textContent = 'Вы выиграли';
+
+    const divTimeTitle = document.createElement('div');
+    divTimeTitle.classList.add('time__title');
+
+    const timeTitle = document.createElement('h4');
+    timeTitle.textContent = 'Затраченное время:';
+
+    const divSpanTime = document.createElement('div');
+    divSpanTime.classList.add('span-time');
+
+    const spanNumMin = document.createElement('span');
+    spanNumMin.classList.add('number');
+    spanNumMin.classList.add('num');
+    spanNumMin.textContent = '0' + `${window.application.min}` + '.';
+
+    const spanNumSec = document.createElement('span');
+    spanNumSec.classList.add('number');
+    spanNumSec.classList.add('num');
+    spanNumSec.textContent = '0' + `${window.application.sec}`;
+
+    const divBtn = document.createElement('div');
+    divBtn.classList.add('div__btn');
+
+    const gameBtnStart = document.createElement('button');
+    gameBtnStart.classList.add('game__btn-start');
+    gameBtnStart.classList.add('btn-start');
+    gameBtnStart.textContent = 'Играть снова';
+
+    container.appendChild(divGame);
+    divGame.appendChild(divGameCard);
+    divGameCard.appendChild(divCardContent);
+    divCardContent.appendChild(divImgWin);
+    divImgWin.appendChild(imgWin);
+    divCardContent.appendChild(h3);
+    divCardContent.appendChild(divTimeTitle);
+    divTimeTitle.appendChild(timeTitle);
+    divCardContent.appendChild(divSpanTime);
+    divSpanTime.appendChild(spanNumMin);
+    divSpanTime.appendChild(spanNumSec);
+    divCardContent.appendChild(divBtn);
+    divBtn.appendChild(gameBtnStart);
+
+    gameBtnStart.addEventListener('click', () => {
+        window.application.renderScreen('start');
+    });
+}
+window.application.blocks['win'] = renderWinBlock;
+
+function renderWinScreen() {
+    const div = document.createElement('div');
+    app?.appendChild(div);
+    window.application.renderBlock('win', div);
+}
+window.application.screens['win'] = renderWinScreen;
+
+function renderLoseBlock(container) {
+    const divGame = document.createElement('div');
+    divGame.classList.add('game');
+
+    const divGameCard = document.createElement('div');
+    divGameCard.classList.add('game__card');
+
+    const divCardContent = document.createElement('div');
+    divCardContent.classList.add('game__card-content');
+
+    const divImgWin = document.createElement('div');
+    divImgWin.classList.add('img__win');
+
+    const imgLose = document.createElement('img');
+    imgLose.src = imgLoses;
+
+    const h3 = document.createElement('h3');
+    h3.classList.add('game__title');
+    h3.textContent = 'Вы проиграли';
+
+    const divTimeTitle = document.createElement('div');
+    divTimeTitle.classList.add('time__title');
+
+    const timeTitle = document.createElement('h4');
+    timeTitle.textContent = 'Затраченное время:';
+
+    const divSpanTime = document.createElement('div');
+    divSpanTime.classList.add('span-time');
+
+    const spanNumMin = document.createElement('span');
+    spanNumMin.classList.add('number');
+    spanNumMin.classList.add('num');
+    spanNumMin.textContent = '0' + `${window.application.min}` + '.';
+
+    const spanNumSec = document.createElement('span');
+    spanNumSec.classList.add('number');
+    spanNumSec.classList.add('num');
+    spanNumSec.textContent = '0' + `${window.application.sec}`;
+
+    const divBtn = document.createElement('div');
+    divBtn.classList.add('div__btn');
+
+    const gameBtnStart = document.createElement('button');
+    gameBtnStart.classList.add('game__btn-start');
+    gameBtnStart.classList.add('btn-start');
+    gameBtnStart.textContent = 'Играть снова';
+
+    container.appendChild(divGame);
+    divGame.appendChild(divGameCard);
+    divGameCard.appendChild(divCardContent);
+    divCardContent.appendChild(divImgWin);
+    divImgWin.appendChild(imgLose);
+    divCardContent.appendChild(h3);
+    divCardContent.appendChild(divTimeTitle);
+    divTimeTitle.appendChild(timeTitle);
+    divCardContent.appendChild(divSpanTime);
+    divSpanTime.appendChild(spanNumMin);
+    divSpanTime.appendChild(spanNumSec);
+    divCardContent.appendChild(divBtn);
+    divBtn.appendChild(gameBtnStart);
+
+    gameBtnStart.addEventListener('click', () => {
+        window.application.renderScreen('start');
+    });
+}
+window.application.blocks['lose'] = renderLoseBlock;
+
+function renderLoseScreen() {
+    const div = document.createElement('div');
+    app?.appendChild(div);
+    window.application.renderBlock('lose', div);
+}
+window.application.screens['lose'] = renderLoseScreen;
