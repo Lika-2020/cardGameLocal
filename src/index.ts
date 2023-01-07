@@ -1,9 +1,9 @@
+
 import './style.scss';
 import img from './img/cardFaceDown.jpg';
 import ImgCards from './frontFacesCard';
 import imgWins from './img/win.svg';
 import imgLoses from './img/lose.svg';
-
 
 declare global {
     interface Window {
@@ -24,8 +24,8 @@ window.application = {
     min: 0,
     sec: 0,
 
-    renderScreen: function (screenName) {
-        window.application.timers.forEach((element) => {
+    renderScreen: function (screenName: any) {
+        window.application.timers.forEach((element: any) => {
             clearInterval(element);
         });
 
@@ -36,7 +36,7 @@ window.application = {
         }
     },
 
-    renderBlock: function (blockName, container) {
+    renderBlock: function (blockName: any, container: any) {
         if (!window.application.blocks[blockName]) {
             console.warn('Такого блока нет');
         } else {
@@ -46,7 +46,7 @@ window.application = {
     timers: [],
 };
 
-function renderStartBlock(container) {
+function renderStartBlock(container: any) {
     const divGame = document.createElement('div');
     divGame.classList.add('game');
 
@@ -139,7 +139,7 @@ function renderStartScreen() {
 window.application.screens['start'] = renderStartScreen;
 window.application.renderScreen('start');
 
-function renderGameFieldBlock(container) {
+function renderGameFieldBlock(container: any) {
     const divCards = document.createElement('div');
     divCards.classList.add('cards');
 
@@ -163,11 +163,13 @@ function renderGameFieldBlock(container) {
 
     for (let i = 0; i < numberOfCards!; i++) {
         getRandomInt();
-        if (arrCard.includes(cardValue)) {
-            getRandomInt();
-            arrCard.push(cardValue);
-        } else {
-            arrCard.push(cardValue);
+        if (cardValue !== undefined) {
+            if (arrCard.includes(cardValue)) {
+                getRandomInt();
+                arrCard.push(cardValue);
+            } else {
+                arrCard.push(cardValue);
+            }
         }
     }
 
@@ -226,7 +228,7 @@ function renderGameFieldBlock(container) {
     const cards = document.querySelectorAll('.cards__image');
     let hasFlippedCard = false;
 
-    const flipCardClick = (event) => {
+    const flipCardClick = (event: any) => {
         let firstCard;
         let secondCard;
         const target = event.target.parentElement;
@@ -246,7 +248,6 @@ function renderGameFieldBlock(container) {
     const divCardsImage = document.querySelectorAll('.cards__image');
 
     let compared: Element[] = [];
-  
 
     let counter = 0;
     document.firstElementChild instanceof Node;
@@ -263,7 +264,9 @@ function renderGameFieldBlock(container) {
 
                 console.log(compared);
 
-                console.log(item?.firstElementChild?.attributes.src.nodeValue);
+                console.log(
+                    item?.firstElementChild?.attributes.src.nodeValue
+                );
             } else {
                 return;
             }
@@ -298,7 +301,7 @@ function renderGameFieldBlock(container) {
 
 window.application.blocks['gameField'] = renderGameFieldBlock;
 
-function renderHeaderBlock(container) {
+function renderHeaderBlock(container: any) {
     const header = document.createElement('header');
     container.appendChild(header);
 
@@ -386,7 +389,7 @@ function renderGameFieldScreen() {
 window.application.screens['gameField'] = renderGameFieldScreen;
 //вызываем в btnStart click
 
-function renderWinBlock(container) {
+function renderWinBlock(container: any) {
     const divGame = document.createElement('div');
     divGame.classList.add('game');
 
@@ -460,7 +463,7 @@ function renderWinScreen() {
 }
 window.application.screens['win'] = renderWinScreen;
 
-function renderLoseBlock(container) {
+function renderLoseBlock(container: any) {
     const divGame = document.createElement('div');
     divGame.classList.add('game');
 
