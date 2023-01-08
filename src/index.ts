@@ -1,4 +1,3 @@
-
 import './style.scss';
 import img from './img/cardFaceDown.jpg';
 import ImgCards from './frontFacesCard';
@@ -247,7 +246,7 @@ function renderGameFieldBlock(container: any) {
 
     const divCardsImage = document.querySelectorAll('.cards__image');
 
-    let compared: Element[] = [];
+    let compared: HTMLImageElement[] = [];
 
     let counter = 0;
     document.firstElementChild instanceof Node;
@@ -259,21 +258,19 @@ function renderGameFieldBlock(container: any) {
                     item.removeChild(item.lastElementChild);
                 }
                 if (item.firstElementChild != null) {
-                    compared.push(item.firstElementChild);
+                    compared.push(item.firstElementChild as HTMLImageElement);
                 }
 
                 console.log(compared);
 
-                console.log(
-                    item?.firstElementChild?.attributes.src.nodeValue
-                );
+               // console.log(item?.firstElementChild?.src);
             } else {
                 return;
             }
             if (compared.length >= 2) {
                 if (
-                    compared[0].attributes.src.nodeValue ===
-                    compared[1].attributes.src.nodeValue
+                    compared[0].src ===
+                    compared[1].src
                 ) {
                     compared = [];
                     console.log(compared);
@@ -354,7 +351,7 @@ function renderHeaderBlock(container: any) {
         window.application.time = setInterval(function () {
             sec++;
 
-            spanNumSec.textContent = sec;
+            spanNumSec.textContent = sec.toString();
 
             if (sec < 10) {
                 spanNumSec.textContent = '0' + sec;
