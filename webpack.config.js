@@ -48,7 +48,7 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.ts'],
+        extensions: ['.js', '.ts'],
     },
     optimization: {
         minimizer: ['...', new CssMinimizerPlugin()],
