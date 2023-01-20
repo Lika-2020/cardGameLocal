@@ -8,7 +8,7 @@ declare global {
     interface Window {
         application: any;
     }
-}
+};
 
 window.application = window.application || {};
 
@@ -23,7 +23,7 @@ window.application = {
     min: 0,
     sec: 0,
 
-    renderScreen: function (screenName: any) {
+    renderScreen: function (screenName: string) {
         window.application.timers.forEach((element: any) => {
             clearInterval(element);
         });
@@ -35,7 +35,7 @@ window.application = {
         }
     },
 
-    renderBlock: function (blockName: any, container: any) {
+    renderBlock: function (blockName: string, container: object) {
         if (!window.application.blocks[blockName]) {
             console.warn('Такого блока нет');
         } else {
@@ -45,7 +45,7 @@ window.application = {
     timers: [],
 };
 
-function renderStartBlock(container: any) {
+ function renderStartBlock(container: HTMLElement) {
     const divGame = document.createElement('div');
     divGame.classList.add('game');
 
@@ -138,7 +138,7 @@ function renderStartScreen() {
 window.application.screens['start'] = renderStartScreen;
 window.application.renderScreen('start');
 
-function renderGameFieldBlock(container: any) {
+function renderGameFieldBlock(container: HTMLElement) {
     const divCards = document.createElement('div');
     divCards.classList.add('cards');
 
@@ -228,6 +228,7 @@ function renderGameFieldBlock(container: any) {
     let hasFlippedCard = false;
 
     const flipCardClick = (event: any) => {
+      
         let firstCard;
         let secondCard;
         const target = event.target.parentElement;
@@ -263,15 +264,11 @@ function renderGameFieldBlock(container: any) {
 
                 console.log(compared);
 
-               // console.log(item?.firstElementChild?.src);
             } else {
                 return;
             }
             if (compared.length >= 2) {
-                if (
-                    compared[0].src ===
-                    compared[1].src
-                ) {
+                if (compared[0].src === compared[1].src) {
                     compared = [];
                     console.log(compared);
                     divCardsImage.forEach((item) => {
@@ -386,7 +383,7 @@ function renderGameFieldScreen() {
 window.application.screens['gameField'] = renderGameFieldScreen;
 //вызываем в btnStart click
 
-function renderWinBlock(container: any) {
+function renderWinBlock(container:  HTMLElement) {
     const divGame = document.createElement('div');
     divGame.classList.add('game');
 
@@ -460,7 +457,7 @@ function renderWinScreen() {
 }
 window.application.screens['win'] = renderWinScreen;
 
-function renderLoseBlock(container: any) {
+function renderLoseBlock(container: HTMLElement) {
     const divGame = document.createElement('div');
     divGame.classList.add('game');
 
